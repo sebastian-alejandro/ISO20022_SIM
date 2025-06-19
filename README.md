@@ -1,5 +1,11 @@
 # ISO 20022 Simulator
 
+[![CI/CD Pipeline](https://github.com/sebastian-alejandro/ISO20022_SIM/actions/workflows/ci.yml/badge.svg)](https://github.com/sebastian-alejandro/ISO20022_SIM/actions/workflows/ci.yml)
+[![Java](https://img.shields.io/badge/Java-17-orange.svg)](https://openjdk.java.net/projects/jdk/17/)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.1.12-brightgreen.svg)](https://spring.io/projects/spring-boot)
+[![Docker](https://img.shields.io/badge/Docker-enabled-blue.svg)](https://www.docker.com/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 Simulador para mensajes financieros ISO 20022 desarrollado en Java con Spring Boot, diseñado para soportar 1000 TPS con comunicación HTTP/TCP-IP, logging estructurado y métricas de monitoreo.
 
 ## 🚀 Quick Start
@@ -14,8 +20,8 @@ Simulador para mensajes financieros ISO 20022 desarrollado en Java con Spring Bo
 
 1. **Clonar el repositorio**
    ```bash
-   git clone <repository-url>
-   cd iso20022_sim
+   git clone https://github.com/sebastian-alejandro/ISO20022_SIM.git
+   cd ISO20022_SIM
    ```
 
 2. **Iniciar base de datos de desarrollo**
