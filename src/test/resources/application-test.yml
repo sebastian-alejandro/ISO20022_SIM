@@ -1,0 +1,55 @@
+# Configuración específica para tests
+spring:
+  profiles:
+    active: test
+  
+  # Base de datos en memoria para tests rápidos
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: 
+  
+  # JPA configurado para tests
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    defer-datasource-initialization: true
+  
+  # Configuración de SQL para inicialización
+  sql:
+    init:
+      mode: always
+      data-locations: classpath:test-data.sql
+
+# Configuración del simulador para tests
+simulator:
+  performance:
+    max-concurrent-requests: 100
+    request-timeout: PT5S
+    thread-pool-size: 10
+    queue-capacity: 100
+  iso20022:
+    schema-path: classpath:test-schemas/
+    validate-schema: true
+    enable-strict-validation: false
+    supported-messages:
+      - pain.001
+      - pacs.008
+
+# Logging mínimo para tests
+logging:
+  level:
+    com.kuvasz.iso20022: WARN
+    org.springframework: WARN
+    org.hibernate: WARN
+    org.testcontainers: WARN
+  pattern:
+    console: "%d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n"
+
+# Actuator deshabilitado en tests
+management:
+  endpoints:
+    enabled-by-default: false

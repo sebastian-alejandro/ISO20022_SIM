@@ -1,0 +1,172 @@
+# Configuración base de la aplicación
+spring:
+  application:
+    name: iso20022-simulator
+  profiles:
+    active: dev
+
+# Configuración del servidor
+server:
+  port: 8080
+  shutdown: graceful
+
+# Configuración de management y actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: when-authorized
+    metrics:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+# Configuración del simulador
+simulator:
+  performance:
+    max-concurrent-requests: 1000
+    request-timeout: PT30S
+    thread-pool-size: 50
+    queue-capacity: 1000
+  iso20022:
+    schema-path: classpath:schemas/
+    validate-schema: true
+    enable-strict-validation: false
+    supported-messages:
+      - pain.001
+      - pacs.008
+      - camt.056
+  database:
+    connection-pool-size: 20
+    connection-timeout: PT30S
+    max-lifetime: 1800
+
+# Configuración de logging por defecto
+logging:
+  level:
+    com.kuvasz.iso20022: INFO
+    org.springframework.web: WARN
+    org.springframework.security: WARN
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+
+---
+# Perfil de desarrollo
+spring:
+  config:
+    activate:
+      on-profile: dev
+  
+  # Base de datos H2 para desarrollo
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: 
+  
+  # Configuración JPA para desarrollo
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  
+  # Consola H2 habilitada
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+# Logging más detallado en desarrollo
+logging:
+  level:
+    com.kuvasz.iso20022: DEBUG
+    org.springframework.web: INFO
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
+---
+# Perfil de testing
+spring:
+  config:
+    activate:
+      on-profile: test
+  
+  # Base de datos H2 para tests
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: 
+  
+  # JPA para tests
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+
+# Logging mínimo para tests
+logging:
+  level:
+    com.kuvasz.iso20022: WARN
+    org.springframework: WARN
+    org.hibernate: WARN
+
+---
+# Perfil de producción
+spring:
+  config:
+    activate:
+      on-profile: prod
+  
+  # Base de datos PostgreSQL para producción
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:iso20022_sim}
+    driver-class-name: org.postgresql.Driver
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:}
+    hikari:
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      maximum-pool-size: ${simulator.database.connection-pool-size:20}
+      minimum-idle: 5
+      pool-name: ISO20022SimulatorPool
+  
+  # JPA para producción
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 25
+        order_inserts: true
+        order_updates: true
+
+# Configuración del servidor para producción
+server:
+  port: ${SERVER_PORT:8080}
+  compression:
+    enabled: true
+  http2:
+    enabled: true
+
+# Logging para producción
+logging:
+  level:
+    root: WARN
+    com.kuvasz.iso20022: INFO
+  config: classpath:logback-spring.xml
