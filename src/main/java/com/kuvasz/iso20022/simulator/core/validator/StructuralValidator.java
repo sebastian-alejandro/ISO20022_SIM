@@ -56,15 +56,17 @@ public class StructuralValidator implements MessageValidator {
             logger.warn("Could not configure schema factory security features: {}", e.getMessage());
         }
     }
-    
-    @Override
+      @Override
     public List<ValidationError> validate(MessageContext context) throws ValidationException {
-        List<ValidationError> errors = new ArrayList<>();
-        
-        if (context == null || context.getOriginalXml() == null) {
-            errors.add(ValidationError.structuralError("NULL_CONTEXT", "Message context or XML content is null", "/"));
-            return errors;
+        if (context == null) {
+            throw new ValidationException("MessageContext cannot be null");
         }
+        
+        if (context.getOriginalXml() == null) {
+            throw new ValidationException("Document is required for structural validation");
+        }
+        
+        List<ValidationError> errors = new ArrayList<>();
         
         String messageType = context.getMessageType();
         if (messageType == null || "UNKNOWN".equals(messageType)) {
@@ -169,10 +171,9 @@ public class StructuralValidator implements MessageValidator {
                 "I/O error during validation: " + e.getMessage(), "/"));
         }
     }
-    
-    @Override
+      @Override
     public boolean canHandle(String messageType) {
-        return messageType != null && SCHEMA_MAPPINGS.containsKey(messageType);
+        return messageType != null;  // StructuralValidator puede manejar cualquier tipo de mensaje
     }
     
     @Override

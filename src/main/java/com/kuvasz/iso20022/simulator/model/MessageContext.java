@@ -3,6 +3,7 @@ package com.kuvasz.iso20022.simulator.model;
 import org.w3c.dom.Document;
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.HashMap;
 
 /**
  * Representa un mensaje ISO 20022 parseado
@@ -11,6 +12,7 @@ public class MessageContext {
     
     private String messageId;
     private String messageType;
+    private String messageName;
     private String businessMessageIdentifier;
     private String messageDefinitionIdentifier;
     private LocalDateTime creationDateTime;
@@ -20,9 +22,11 @@ public class MessageContext {
     private Object parsedMessage;
     private Document parsedDocument;
     private Map<String, Object> properties;
+    private Map<String, String> namespaces;
     
     public MessageContext() {
         this.creationDateTime = LocalDateTime.now();
+        this.namespaces = new HashMap<>();
     }
     
     public MessageContext(String messageId, String messageType) {
@@ -46,6 +50,14 @@ public class MessageContext {
     
     public void setMessageType(String messageType) {
         this.messageType = messageType;
+    }
+    
+    public String getMessageName() {
+        return messageName;
+    }
+    
+    public void setMessageName(String messageName) {
+        this.messageName = messageName;
     }
     
     public String getBusinessMessageIdentifier() {
@@ -119,6 +131,14 @@ public class MessageContext {
         this.properties = properties;
     }
     
+    public Map<String, String> getNamespaces() {
+        return namespaces;
+    }
+    
+    public void setNamespaces(Map<String, String> namespaces) {
+        this.namespaces = namespaces;
+    }
+    
     public void addProperty(String key, Object value) {
         if (properties == null) {
             properties = new java.util.HashMap<>();
@@ -128,6 +148,13 @@ public class MessageContext {
     
     public Object getProperty(String key) {
         return properties != null ? properties.get(key) : null;
+    }
+    
+    public void addNamespace(String prefix, String uri) {
+        if (namespaces == null) {
+            namespaces = new HashMap<>();
+        }
+        namespaces.put(prefix, uri);
     }
     
     @Override

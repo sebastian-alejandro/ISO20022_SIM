@@ -36,10 +36,12 @@ public class SimpleBusinessRuleValidator implements MessageValidator {
     private static final List<String> VALID_CURRENCIES = List.of(
         "USD", "EUR", "GBP", "JPY", "AUD", "CAD", "CHF", "CNY", "SEK", "NZD",
         "MXN", "SGD", "HKD", "NOK", "TRY", "RUB", "INR", "BRL", "ZAR", "KRW"
-    );
-
-    @Override
+    );@Override
     public List<ValidationError> validate(MessageContext context) throws ValidationException {
+        if (context == null) {
+            throw new ValidationException("Contexto de mensaje es null");
+        }
+        
         logger.debug("Iniciando validación de reglas de negocio para mensaje: {}", context.getMessageId());
         
         List<ValidationError> errors = new ArrayList<>();
@@ -84,11 +86,10 @@ public class SimpleBusinessRuleValidator implements MessageValidator {
     @Override
     public String getValidationType() {
         return "BUSINESS_RULES";
-    }
-
-    private void validateMessageIdentification(Document document, List<ValidationError> errors) {
+    }    private void validateMessageIdentification(Document document, List<ValidationError> errors) {
         try {
-            NodeList msgIdNodes = (NodeList) xpath.evaluate("//MsgId", document, XPathConstants.NODESET);
+            // Use local-name() to handle namespaced elements
+            NodeList msgIdNodes = (NodeList) xpath.evaluate("//*[local-name()='MsgId']", document, XPathConstants.NODESET);
             
             for (int i = 0; i < msgIdNodes.getLength(); i++) {
                 String msgId = msgIdNodes.item(i).getTextContent();
@@ -100,15 +101,19 @@ public class SimpleBusinessRuleValidator implements MessageValidator {
                         "Identificación del mensaje no puede exceder 35 caracteres", "MsgId"));
                 }
             }
+            
+            // If no MsgId found, add missing field error
+            if (msgIdNodes.getLength() == 0) {
+                errors.add(ValidationError.missingFieldError("MsgId"));
+            }
         } catch (Exception e) {
             errors.add(ValidationError.businessRuleError("MESSAGE_ID_VALIDATION_ERROR", 
                 "Error validando identificación del mensaje: " + e.getMessage(), "MsgId"));
         }
-    }
-
-    private void validateAmounts(Document document, List<ValidationError> errors) {
+    }    private void validateAmounts(Document document, List<ValidationError> errors) {
         try {
-            NodeList amountNodes = (NodeList) xpath.evaluate("//Amt | //InstdAmt | //EqvtAmt", 
+            // Use local-name() to handle namespaced elements - check for common amount field names
+            NodeList amountNodes = (NodeList) xpath.evaluate("//*[local-name()='Amt' or local-name()='InstdAmt' or local-name()='EqvtAmt']", 
                 document, XPathConstants.NODESET);
             
             for (int i = 0; i < amountNodes.getLength(); i++) {
@@ -136,14 +141,17 @@ public class SimpleBusinessRuleValidator implements MessageValidator {
             errors.add(ValidationError.businessRuleError("AMOUNT_VALIDATION_ERROR", 
                 "Error validando montos: " + e.getMessage(), "Amount"));
         }
-    }
-
-    private void validateCurrencies(Document document, List<ValidationError> errors) {
+    }    private void validateCurrencies(Document document, List<ValidationError> errors) {
         try {
-            NodeList currencyNodes = (NodeList) xpath.evaluate("//Ccy", document, XPathConstants.NODESET);
+            // Use local-name() to handle namespaced elements and also check for Ccy attributes
+            NodeList currencyNodes = (NodeList) xpath.evaluate("//*[local-name()='Ccy'] | //@Ccy", document, XPathConstants.NODESET);
             
             for (int i = 0; i < currencyNodes.getLength(); i++) {
                 String currency = currencyNodes.item(i).getTextContent();
+                // For attributes, getTextContent() might be empty, so check getNodeValue()
+                if (currency == null || currency.trim().isEmpty()) {
+                    currency = currencyNodes.item(i).getNodeValue();
+                }
                 
                 if (currency != null && !currency.trim().isEmpty()) {
                     if (!VALID_CURRENCIES.contains(currency.toUpperCase())) {
@@ -177,11 +185,10 @@ public class SimpleBusinessRuleValidator implements MessageValidator {
             errors.add(ValidationError.businessRuleError("BIC_VALIDATION_ERROR", 
                 "Error validando códigos BIC: " + e.getMessage(), "BIC"));
         }
-    }
-
-    private void validatePaymentInstructions(Document document, List<ValidationError> errors) {
+    }    private void validatePaymentInstructions(Document document, List<ValidationError> errors) {
         try {
-            NodeList paymentInfoNodes = (NodeList) xpath.evaluate("//PmtInf", document, XPathConstants.NODESET);
+            // Use local-name() to handle namespaced elements
+            NodeList paymentInfoNodes = (NodeList) xpath.evaluate("//*[local-name()='PmtInf']", document, XPathConstants.NODESET);
             
             if (paymentInfoNodes.getLength() == 0) {
                 errors.add(ValidationError.missingFieldError("PmtInf"));

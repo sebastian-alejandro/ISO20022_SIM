@@ -1,14 +1,11 @@
 # Configuración específica para tests
+# Base de datos en memoria para tests rápidos
 spring:
-  profiles:
-    active: test
-  
-  # Base de datos en memoria para tests rápidos
   datasource:
     url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
     driver-class-name: org.h2.Driver
     username: sa
-    password: 
+    password:
   
   # JPA configurado para tests
   jpa:
@@ -17,12 +14,10 @@ spring:
       ddl-auto: create-drop
     show-sql: false
     defer-datasource-initialization: true
-  
-  # Configuración de SQL para inicialización
+    # Configuración de SQL para inicialización
   sql:
     init:
-      mode: always
-      data-locations: classpath:test-data.sql
+      mode: never
 
 # Configuración del simulador para tests
 simulator:

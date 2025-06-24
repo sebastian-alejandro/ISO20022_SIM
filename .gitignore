@@ -4,6 +4,10 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+# Maven distribuido
+apache-maven-*/
+maven.zip
+
 # IDEs
 .idea/
 *.iws
