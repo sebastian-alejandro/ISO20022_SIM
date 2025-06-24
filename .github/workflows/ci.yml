@@ -112,7 +112,7 @@ jobs:
       run: ./mvnw package -DskipTests
 
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: jar-artifacts
         path: target/*.jar
@@ -146,7 +146,7 @@ jobs:
       run: ./mvnw org.owasp:dependency-check-maven:check
 
     - name: Upload security scan results
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: security-reports
