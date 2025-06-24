@@ -5,6 +5,25 @@ Todos los cambios notables de este proyecto serán documentados en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] - 2025-06-24
+
+### 🚨 Fixed - CRÍTICO
+- **CRÍTICO**: GitHub Actions pipeline fallaba con error "Permission denied" en mvnw
+- Maven Wrapper corrupto regenerado correctamente usando `maven-wrapper-plugin:3.3.2`
+- Workflow de CI/CD completamente reescrito con permisos correctos
+- Test reporter configurado para encontrar archivos de reporte de pruebas
+- `fail-on-error: false` para evitar bloqueos en generación de reportes
+
+### 🔧 Changed
+- Maven Wrapper actualizado a versión oficial 3.3.2
+- Pipeline CI/CD con step `chmod +x ./mvnw` en todos los jobs
+- Configuración de test reporter mejorada (surefire + failsafe reports)
+
+### 🎯 CI/CD
+- **Pipeline**: GitHub Actions completamente funcional
+- **Testing**: Tests automáticos ejecutándose correctamente
+- **Reports**: Generación de reportes de pruebas y cobertura habilitada
+
 ## [1.1.0] - 2025-06-24
 
 ### ✨ Added

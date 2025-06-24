@@ -5,12 +5,18 @@
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.1.12-brightgreen.svg)](https://spring.io/projects/spring-boot)
 [![Docker](https://img.shields.io/badge/Docker-enabled-blue.svg)](https://www.docker.com/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/Version-1.1.0-success.svg)](./CHANGELOG.md)
+[![Version](https://img.shields.io/badge/Version-1.1.1-success.svg)](./CHANGELOG.md)
 [![Tests](https://img.shields.io/badge/Tests-53%20passing-brightgreen.svg)](./RELEASE_NOTES_v1.1.0.md)
 
 Simulador para mensajes financieros ISO 20022 desarrollado en Java con Spring Boot, diseñado para soportar 1000 TPS con comunicación HTTP/TCP-IP, logging estructurado y métricas de monitoreo.
 
-## 🎯 **Última Versión: v1.1.0**
+## 🎯 **Última Versión: v1.1.1**
+
+### ✨ **Corrección Crítica en v1.1.1**
+- 🚨 **CI/CD Fix**: GitHub Actions pipeline completamente funcional
+- ✅ **Maven Wrapper**: Regenerado correctamente con permisos apropiados
+- ✅ **Testing**: Pipeline de CI/CD ejecutando tests automáticamente
+- ✅ **Reports**: Generación de reportes de pruebas habilitada
 
 ### ✨ **Novedades en v1.1.0**
 - ✅ **Validación robusta**: Todos los validadores funcionando al 100%
@@ -19,7 +25,7 @@ Simulador para mensajes financieros ISO 20022 desarrollado en Java con Spring Bo
 - ✅ **XPath mejorado**: Manejo robusto de namespaces XML
 - ✅ **Null-safe validation**: Manejo seguro de contextos nulos
 
-📋 [Ver Release Notes completas](./RELEASE_NOTES_v1.1.0.md) | 📜 [Changelog](./CHANGELOG.md)
+📋 [Ver Release Notes v1.1.1](./RELEASE_NOTES_v1.1.1.md) | [Ver v1.1.0](./RELEASE_NOTES_v1.1.0.md) | 📜 [Changelog](./CHANGELOG.md)
 
 ## 🚀 Quick Start
 
